@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Guichaguri
@@ -312,11 +313,11 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
         switch (reason) {
             case PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS:
-                manager.onAudioFocusChange(true, true, false);
-                break;
+            manager.onAudioFocusChange(true, true, false);
+            break;
             case PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY:
-                manager.onAudioFocusChange(false, true, false);
-                break;
+            manager.onAudioFocusChange(false, true, false);
+            break;
         }
     }
 
@@ -355,7 +356,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
         //     code = "playback"; // Other unexpected errors related to the playback
         // }
 
-        manager.onError(code, error.getCause().getMessage());
+        manager.onError(code, Objects.requireNonNull(error.getCause()).getMessage());
     }
 
     @Override
