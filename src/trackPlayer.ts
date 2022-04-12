@@ -15,6 +15,8 @@ import {
 const { TrackPlayerModule: TrackPlayer } = NativeModules
 const emitter = Platform.OS !== 'android' ? new NativeEventEmitter(TrackPlayer) : DeviceEventEmitter
 
+let isSetupedPlayer = false
+
 // MARK: - Helpers
 
 function resolveImportedPath(path?: number | string) {
@@ -25,10 +27,12 @@ function resolveImportedPath(path?: number | string) {
 // MARK: - General API
 
 async function setupPlayer(options: PlayerOptions = {}): Promise<void> {
+  isSetupedPlayer = true
   return TrackPlayer.setupPlayer(options || {})
 }
 
 function destroy() {
+  isSetupedPlayer = false
   return TrackPlayer.destroy()
 }
 
@@ -74,6 +78,7 @@ async function add(tracks: Track | Track[], insertBeforeIndex?: number): Promise
 }
 
 async function remove(tracks: number | number[]): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   if (!Array.isArray(tracks)) {
     tracks = [tracks]
   }
@@ -82,18 +87,22 @@ async function remove(tracks: number | number[]): Promise<void> {
 }
 
 async function removeUpcomingTracks(): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.removeUpcomingTracks()
 }
 
 async function skip(trackIndex: number): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.skip(trackIndex)
 }
 
 async function skipToNext(): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.skipToNext()
 }
 
 async function skipToPrevious(): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.skipToPrevious()
 }
 
@@ -116,6 +125,7 @@ async function updateOptions(options: MetadataOptions = {}): Promise<void> {
 }
 
 async function updateMetadataForTrack(trackIndex: number, metadata: TrackMetadataBase): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   // Clone the object before modifying it
   metadata = Object.assign({}, metadata)
 
@@ -126,10 +136,12 @@ async function updateMetadataForTrack(trackIndex: number, metadata: TrackMetadat
 }
 
 function clearNowPlayingMetadata(): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.clearNowPlayingMetadata()
 }
 
 function updateNowPlayingMetadata(metadata: NowPlayingMetadata, playing: boolean): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   // Clone the object before modifying it
   metadata = Object.assign({}, metadata)
 
@@ -146,26 +158,32 @@ async function reset(): Promise<void> {
 }
 
 async function play(): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.play()
 }
 
 async function pause(): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.pause()
 }
 
 async function stop(): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.stop()
 }
 
 async function seekTo(position: number): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.seekTo(position)
 }
 
 async function setVolume(level: number): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.setVolume(level)
 }
 
 async function setRate(rate: number): Promise<void> {
+  if (!isSetupedPlayer) return Promise.resolve()
   return TrackPlayer.setRate(rate)
 }
 
@@ -180,38 +198,47 @@ async function getVolume(): Promise<number> {
 }
 
 async function getRate(): Promise<number> {
+  if (!isSetupedPlayer) return Promise.resolve(0)
   return TrackPlayer.getRate()
 }
 
 async function getTrack(trackIndex: number): Promise<Track | null> {
+  if (!isSetupedPlayer) return Promise.resolve(null)
   return TrackPlayer.getTrack(trackIndex)
 }
 
 async function getQueue(): Promise<Track[]> {
+  if (!isSetupedPlayer) return Promise.resolve([])
   return TrackPlayer.getQueue()
 }
 
 async function getCurrentTrack(): Promise<number> {
+  if (!isSetupedPlayer) return Promise.resolve(-1)
   return TrackPlayer.getCurrentTrack()
 }
 
 async function getDuration(): Promise<number> {
+  if (!isSetupedPlayer) return Promise.resolve(0)
   return TrackPlayer.getDuration()
 }
 
 async function getBufferedPosition(): Promise<number> {
+  if (!isSetupedPlayer) return Promise.resolve(0)
   return TrackPlayer.getBufferedPosition()
 }
 
 async function getPosition(): Promise<number> {
+  if (!isSetupedPlayer) return Promise.resolve(0)
   return TrackPlayer.getPosition()
 }
 
 async function getState(): Promise<State> {
+  if (!isSetupedPlayer) return Promise.resolve(State.None)
   return TrackPlayer.getState()
 }
 
 async function getRepeatMode(): Promise<RepeatMode> {
+  if (!isSetupedPlayer) return Promise.resolve(RepeatMode.Off)
   return TrackPlayer.getRepeatMode()
 }
 
