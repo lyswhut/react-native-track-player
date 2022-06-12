@@ -1,4 +1,4 @@
-import groovy.json.JsonSlurper
+// import groovy.json.JsonSlurper
 
 buildscript {
     repositories {
@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.0.4'
     }
 }
 
@@ -14,13 +14,13 @@ apply plugin: 'com.android.library'
 
 boolean dash = false, hls = false, smoothstreaming = false
 
-File file = file('../../../track-player.json')
-if(file.exists()) {
-    def json = new JsonSlurper().parseText(file.text)
-    dash = json.dash ?: dash
-    hls = json.hls ?: hls
-    smoothstreaming = json.smoothstreaming ?: smoothstreaming
-}
+// File file = file('../../../track-player.json')
+// if(file.exists()) {
+//     def json = new JsonSlurper().parseText(file.text)
+//     dash = json.dash ?: dash
+//     hls = json.hls ?: hls
+//     smoothstreaming = json.smoothstreaming ?: smoothstreaming
+// }
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -39,10 +39,10 @@ android {
         consumerProguardFiles 'proguard-rules.txt'
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+    // compileOptions {
+    //     sourceCompatibility JavaVersion.VERSION_1_8
+    //     targetCompatibility JavaVersion.VERSION_1_8
+    // }
 }
 
 repositories {
