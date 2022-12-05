@@ -74,6 +74,11 @@ export interface PlayerOptions {
    */
   waitForBuffer?: boolean
   /**
+   * Whether to handle audio focus.
+   * Defaults to `true`.
+   */
+  handleAudioFocus?: boolean
+  /**
    * Indicates whether the player should automatically update now playing metadata data in control center / notification.
    * Defaults to `true`.
    */
