@@ -21,7 +21,7 @@ import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline.Window;
-import com.google.android.exoplayer2.TracksInfo;
+import com.google.android.exoplayer2.Tracks;
 import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.exoplayer2.metadata.MetadataOutput;
 import com.google.android.exoplayer2.source.TrackGroup;
@@ -276,13 +276,13 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
     }
 
     @Override
-    public void onTracksInfoChanged(TracksInfo tracksInfo) {
-      ImmutableList<TracksInfo.TrackGroupInfo> trackGroupsInfo = tracksInfo.getTrackGroupInfos();
+    public void onTracksChanged(Tracks tracksInfo) {
+      ImmutableList<Tracks.Group> trackGroupsInfo = tracksInfo.getGroups();
 
       for(int i = 0; i < trackGroupsInfo.size(); i++) {
         // Loop through all track groups.
         // As for the current implementation, there should be only one
-        TrackGroup group = trackGroupsInfo.get(i).getTrackGroup();
+        TrackGroup group = trackGroupsInfo.get(i).getMediaTrackGroup();
         for(int f = 0; f < group.length; f++) {
           // Loop through all formats inside the track group
           Format format = group.getFormat(f);

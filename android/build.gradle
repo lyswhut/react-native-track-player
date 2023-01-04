@@ -27,7 +27,7 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    compileSdkVersion safeExtGet("compileSdkVersion", 30)
+    compileSdkVersion safeExtGet("compileSdkVersion", 33)
 
     defaultConfig {
         minSdkVersion safeExtGet("minSdkVersion", 21) // RN's minimum version
@@ -60,7 +60,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    def exoPlayerVersion = safeExtGet("exoPlayerVersion", '2.16.0')
+    def exoPlayerVersion = safeExtGet("exoPlayerVersion", '2.18.2')
 
     // ExoPlayer Core
     implementation "com.google.android.exoplayer:exoplayer-core:${exoPlayerVersion}"
@@ -87,8 +87,8 @@ dependencies {
     }
 
     // Make sure we're using androidx
-    implementation "androidx.core:core:1.6.0"
-    implementation "androidx.media:media:1.4.3"
-    implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0-alpha01"
-    implementation "com.github.bumptech.glide:glide:4.13.1"
+    implementation "androidx.core:core:1.9.0"
+    implementation "androidx.media:media:1.6.0"
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0"
+    implementation "com.github.bumptech.glide:glide:4.14.2"
 }
