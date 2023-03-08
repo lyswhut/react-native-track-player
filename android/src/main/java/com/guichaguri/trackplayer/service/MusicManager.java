@@ -144,7 +144,7 @@ public class MusicManager {
         // player.addAnalyticsListener(new EventLogger(null));
 
         player.setAudioAttributes(new com.google.android.exoplayer2.audio.AudioAttributes.Builder()
-                .setContentType(C.CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA).build(), shouldHandleAudioFocus);
+                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA).build(), shouldHandleAudioFocus);
 
         return new LocalPlayback(service, this, player, cacheMaxSize, autoUpdateMetadata);
     }
