@@ -50,7 +50,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     // https://github.com/google/ExoPlayer/issues/2728
     protected int lastKnownWindow = C.INDEX_UNSET;
-    protected long lastKnownPosition = C.POSITION_UNSET;
+    protected long lastKnownPosition = C.INDEX_UNSET;
     protected int previousState = PlaybackStateCompat.STATE_NONE;
     protected float volumeMultiplier = 1.0F;
     protected boolean autoUpdateMetadata;
@@ -159,7 +159,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public void stop() {
         lastKnownWindow = C.INDEX_UNSET;
-        lastKnownPosition = C.POSITION_UNSET;
+        lastKnownPosition = C.INDEX_UNSET;
 
         player.stop();
         player.setPlayWhenReady(false);
@@ -168,7 +168,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public void reset() {
         lastKnownWindow = C.INDEX_UNSET;
-        lastKnownPosition = C.POSITION_UNSET;
+        lastKnownPosition = C.INDEX_UNSET;
 
         player.stop();
         player.clearMediaItems();
