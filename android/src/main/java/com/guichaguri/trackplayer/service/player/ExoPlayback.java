@@ -21,7 +21,7 @@ import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline.Window;
-import com.google.android.exoplayer2.Tracks;
+import com.google.android.exoplayer2.TracksInfo;
 import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.exoplayer2.metadata.MetadataOutput;
 import com.google.android.exoplayer2.source.TrackGroup;
@@ -50,7 +50,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     // https://github.com/google/ExoPlayer/issues/2728
     protected int lastKnownWindow = C.INDEX_UNSET;
-    protected long lastKnownPosition = C.INDEX_UNSET;
+    protected long lastKnownPosition = C.POSITION_UNSET;
     protected int previousState = PlaybackStateCompat.STATE_NONE;
     protected float volumeMultiplier = 1.0F;
     protected boolean autoUpdateMetadata;
@@ -159,7 +159,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public void stop() {
         lastKnownWindow = C.INDEX_UNSET;
-        lastKnownPosition = C.INDEX_UNSET;
+        lastKnownPosition = C.POSITION_UNSET;
 
         player.stop();
         player.setPlayWhenReady(false);
@@ -168,7 +168,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public void reset() {
         lastKnownWindow = C.INDEX_UNSET;
-        lastKnownPosition = C.INDEX_UNSET;
+        lastKnownPosition = C.POSITION_UNSET;
 
         player.stop();
         player.clearMediaItems();
@@ -276,13 +276,13 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
     }
 
     @Override
-    public void onTracksChanged(Tracks tracksInfo) {
-      ImmutableList<Tracks.Group> trackGroupsInfo = tracksInfo.getGroups();
+    public void onTracksInfoChanged(TracksInfo tracksInfo) {
+      ImmutableList<TracksInfo.TrackGroupInfo> trackGroupsInfo = tracksInfo.getTrackGroupInfos();
 
       for(int i = 0; i < trackGroupsInfo.size(); i++) {
         // Loop through all track groups.
         // As for the current implementation, there should be only one
-        TrackGroup group = trackGroupsInfo.get(i).getMediaTrackGroup();
+        TrackGroup group = trackGroupsInfo.get(i).getTrackGroup();
         for(int f = 0; f < group.length; f++) {
           // Loop through all formats inside the track group
           Format format = group.getFormat(f);

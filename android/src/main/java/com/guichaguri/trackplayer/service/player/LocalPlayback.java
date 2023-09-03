@@ -161,7 +161,7 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
         prepared = false; // We set it to false as the queue is now empty
 
         lastKnownWindow = C.INDEX_UNSET;
-        lastKnownPosition = C.INDEX_UNSET;
+        lastKnownPosition = C.POSITION_UNSET;
 
         manager.onReset();
     }

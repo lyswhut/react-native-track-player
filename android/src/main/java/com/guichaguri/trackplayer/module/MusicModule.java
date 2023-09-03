@@ -526,7 +526,7 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
         waitForConnection(() -> {
             long position = binder.getPlayback().getBufferedPosition();
 
-            if(position == C.INDEX_UNSET) {
+            if(position == C.POSITION_UNSET) {
                 callback.resolve(Utils.toSeconds(0));
             } else {
                 callback.resolve(Utils.toSeconds(position));
@@ -539,7 +539,7 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
         waitForConnection(() -> {
             long position = binder.getPlayback().getPosition();
 
-            if(position == C.INDEX_UNSET) {
+            if(position == C.POSITION_UNSET) {
                 callback.reject("unknown", "Unknown position");
             } else {
                 callback.resolve(Utils.toSeconds(position));
