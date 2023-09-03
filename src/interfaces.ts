@@ -79,6 +79,11 @@ export interface PlayerOptions {
    */
   handleAudioFocus?: boolean
   /**
+   * Whether to enable audio offload.
+   * Defaults to `true`.
+   */
+  audioOffload?: boolean
+  /**
    * Indicates whether the player should automatically update now playing metadata data in control center / notification.
    * Defaults to `true`.
    */
