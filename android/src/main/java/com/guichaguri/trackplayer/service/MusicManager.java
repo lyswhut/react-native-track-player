@@ -38,7 +38,7 @@ public class MusicManager {
 
     private final MusicService service;
 
-    private final WakeLock wakeLock;
+    // private final WakeLock wakeLock;
     private WifiLock wifiLock = null;
 
     private final MetadataManager metadata;
@@ -62,14 +62,13 @@ public class MusicManager {
     private boolean shouldEnableAudioOffload = true;
     private String playState = null;
 
-    @SuppressLint("InvalidWakeLockTag")
     public MusicManager(MusicService service) {
         this.service = service;
         this.metadata = new MetadataManager(service, this);
 
-        PowerManager powerManager = (PowerManager)service.getSystemService(Context.POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "track-player-wake-lock");
-        wakeLock.setReferenceCounted(false);
+        // PowerManager powerManager = (PowerManager)service.getSystemService(Context.POWER_SERVICE);
+        // wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "track-player-wake-lock");
+        // wakeLock.setReferenceCounted(false);
 
         // Android 7: Use the application context here to prevent any memory leaks
         WifiManager wifiManager = (WifiManager)service.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -165,7 +164,7 @@ public class MusicManager {
                 service.registerReceiver(noisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
             }
 
-            if(!wakeLock.isHeld()) wakeLock.acquire();
+            // if(!wakeLock.isHeld()) wakeLock.acquire();
 
             if(wifiLock != null && !Utils.isLocal(track.uri)) {
                 if(!wifiLock.isHeld()) wifiLock.acquire();
@@ -186,7 +185,7 @@ public class MusicManager {
         }
 
         // Release the wake and the wifi locks
-        if(wakeLock.isHeld()) wakeLock.release();
+        // if(wakeLock.isHeld()) wakeLock.release();
         if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
 
         if (playback.shouldAutoUpdateMetadata())
@@ -203,7 +202,7 @@ public class MusicManager {
         }
 
         // Release the wake and the wifi locks
-        if(wakeLock.isHeld()) wakeLock.release();
+        // if(wakeLock.isHeld()) wakeLock.release();
         if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
 
         // abandonFocus();
@@ -401,7 +400,7 @@ public class MusicManager {
         metadata.destroy();
 
         // Release the locks
-        if(wakeLock.isHeld()) wakeLock.release();
+        // if(wakeLock.isHeld()) wakeLock.release();
         if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
     }
 
