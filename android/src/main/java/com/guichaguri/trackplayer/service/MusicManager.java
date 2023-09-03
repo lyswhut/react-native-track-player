@@ -6,7 +6,6 @@ import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FO
 import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MAX_BUFFER_MS;
 import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MIN_BUFFER_MS;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +15,6 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 import com.google.android.exoplayer2.C;
@@ -148,7 +145,7 @@ public class MusicManager {
         return new LocalPlayback(service, this, player, cacheMaxSize, autoUpdateMetadata);
     }
 
-    @SuppressLint("WakelockTimeout")
+    // @SuppressLint("WakelockTimeout")
     public void onPlay() {
         Log.d(Utils.LOG, "onPlay");
         if(playback == null) return;
