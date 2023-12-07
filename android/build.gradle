@@ -27,6 +27,7 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
+    namespace = "com.guichaguri.trackplayer"
     compileSdkVersion safeExtGet("compileSdkVersion", 33)
 
     defaultConfig {
