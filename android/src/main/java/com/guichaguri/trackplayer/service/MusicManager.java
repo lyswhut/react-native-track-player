@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import androidx.media3.common.C;
+import androidx.media3.common.TrackSelectionParameters;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
@@ -59,7 +60,6 @@ public class MusicManager {
 
     private boolean stopWithApp = false;
     // private boolean alwaysPauseOnInterruption = false;
-    private boolean shouldEnableAudioOffload = true;
     private String playState = null;
 
     public MusicManager(MusicService service) {
@@ -90,8 +90,6 @@ public class MusicManager {
         this.stopWithApp = stopWithApp;
     }
 
-    public boolean shouldEnableAudioOffload() { return  shouldEnableAudioOffload; }
-
     // public void setAlwaysPauseOnInterruption(boolean alwaysPauseOnInterruption) {
     //     this.alwaysPauseOnInterruption = alwaysPauseOnInterruption;
     // }
@@ -120,7 +118,7 @@ public class MusicManager {
     public LocalPlayback createLocalPlayback(Bundle options) {
         boolean autoUpdateMetadata = options.getBoolean("autoUpdateMetadata", true);
         boolean shouldHandleAudioFocus = options.getBoolean("handleAudioFocus", true);
-        shouldEnableAudioOffload = options.getBoolean("audioOffload", true);
+        boolean shouldEnableAudioOffload = options.getBoolean("audioOffload", true);
         int minBuffer = (int)Utils.toMillis(options.getDouble("minBuffer", Utils.toSeconds(DEFAULT_MIN_BUFFER_MS)));
         int maxBuffer = (int)Utils.toMillis(options.getDouble("maxBuffer", Utils.toSeconds(DEFAULT_MAX_BUFFER_MS)));
         int playBuffer = (int)Utils.toMillis(options.getDouble("playBuffer", Utils.toSeconds(DEFAULT_BUFFER_FOR_PLAYBACK_MS)));
@@ -133,12 +131,33 @@ public class MusicManager {
                 .setBackBuffer(backBuffer, false)
                 .build();
 
-        DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(service)
-                                                      .setEnableAudioOffload(shouldEnableAudioOffload);
+        DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(service);
 
         ExoPlayer player = new ExoPlayer.Builder(service, renderersFactory)
                 .setLoadControl(control)
                 .build();
+
+  
+        TrackSelectionParameters trackSelectionParameters = player.getTrackSelectionParameters().buildUpon()
+            .setAudioOffloadPreferences(new TrackSelectionParameters.AudioOffloadPreferences.Builder()
+                .setAudioOffloadMode(
+                    shouldEnableAudioOffload
+                        ? TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
+                        : TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED)
+                .build())
+            .build();
+        player.setTrackSelectionParameters(trackSelectionParameters);
+        // player.addAudioOffloadListener(new ExoPlayer.AudioOffloadListener() {
+        //     @Override
+        //     public void onSleepingForOffloadChanged(boolean isSleepingForOffload) {
+        //         Log.d(Utils.LOG, "onSleepingForOffloadChanged: " + isSleepingForOffload);
+        //     }
+
+        //     @Override
+        //     public void onOffloadedPlayback(boolean isOffloadedPlayback) {
+        //         Log.d(Utils.LOG, "onOffloadedPlayback: " + isOffloadedPlayback);
+        //     }
+        // });
 
         // player.addAnalyticsListener(new EventLogger(null));
 

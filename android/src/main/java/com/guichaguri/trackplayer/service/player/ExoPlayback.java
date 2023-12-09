@@ -84,8 +84,6 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public abstract void removeUpcomingTracks();
 
-    public abstract void enableAudioOffload(boolean enabled);
-
     public abstract void setRepeatMode(int repeatMode);
 
     public abstract int getRepeatMode();

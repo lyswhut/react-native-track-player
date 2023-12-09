@@ -45,25 +45,25 @@ public class SourceMetadata {
               switch (id) {
                 case "TIT2":
                 case "TT2":
-                  title = id3.value;
+                  title = id3.values.get(0);
                   break;
                 case "TALB":
                 case "TOAL":
                 case "TAL":
-                  album = id3.value;
+                  album = id3.values.get(0);
                   break;
                 case "TOPE":
                 case "TPE1":
                 case "TP1":
-                  artist = id3.value;
+                  artist = id3.values.get(0);
                   break;
                 case "TDRC":
                 case "TOR":
-                  date = id3.value;
+                  date = id3.values.get(0);
                   break;
                 case "TCON":
                 case "TCO":
-                  genre = id3.value;
+                  genre = id3.values.get(0);
                   break;
               }
 

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import androidx.media3.common.C;
+import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
@@ -15,7 +16,6 @@ import androidx.media3.datasource.cache.CacheDataSource;
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor;
 import androidx.media3.datasource.cache.SimpleCache;
 import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.source.ConcatenatingMediaSource;
 import androidx.media3.exoplayer.source.MediaSource;
 
 import com.guichaguri.trackplayer.service.MusicManager;
@@ -37,10 +37,7 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
     private final long cacheMaxSize;
 
     private SimpleCache cache;
-    private ConcatenatingMediaSource source;
     private boolean prepared = false;
-    private boolean enabledAudioOffload = false;
-
     public LocalPlayback(Context context, MusicManager manager, ExoPlayer player, long maxCacheSize,
                          boolean autoUpdateMetadata) {
         super(context, manager, player, autoUpdateMetadata);
@@ -74,7 +71,6 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
     private void prepare() {
         if(!prepared) {
             Log.d(Utils.LOG, "Preparing the media source...");
-            player.setMediaSource(source, false);
             player.prepare();
             prepared = true;
         }
@@ -84,21 +80,22 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
     public void add(Track track, int index, Promise promise) {
         queue.add(index, track);
         MediaSource trackSource = track.toMediaSource(context, this);
-        source.addMediaSource(index, trackSource, manager.getHandler(), () -> promise.resolve(index));
-
+        player.addMediaItem(index, trackSource.getMediaItem());
+        promise.resolve(index);
         prepare();
     }
 
     @Override
     public void add(Collection<Track> tracks, int index, Promise promise) {
-        List<MediaSource> trackList = new ArrayList<>();
+        List<MediaItem> trackList = new ArrayList<>();
 
         for(Track track : tracks) {
-            trackList.add(track.toMediaSource(context, this));
+            trackList.add(track.toMediaSource(context, this).getMediaItem());
         }
 
         queue.addAll(index, tracks);
-        source.addMediaSources(index, trackList, manager.getHandler(), () -> promise.resolve(index));
+        player.addMediaItems(index, trackList);
+        promise.resolve(index);
 
         prepare();
     }
@@ -122,10 +119,9 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
 
             queue.remove(index);
 
+            player.removeMediaItem(index);
             if(i == 0) {
-                source.removeMediaSource(index, manager.getHandler(), Utils.toRunnable(promise));
-            } else {
-                source.removeMediaSource(index);
+              promise.resolve(index);
             }
 
             // Fix the window index
@@ -142,7 +138,7 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
 
         for (int i = queue.size() - 1; i > currentIndex; i--) {
             queue.remove(i);
-            source.removeMediaSource(i);
+            player.removeMediaItem(i);
         }
     }
 
@@ -158,8 +154,8 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
     private void resetQueue() {
         queue.clear();
 
-        source = new ConcatenatingMediaSource();
-        player.setMediaSource(source, true);
+
+        player.clearMediaItems();
         player.prepare();
         prepared = false; // We set it to false as the queue is now empty
 
@@ -235,22 +231,5 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
                 Log.w(Utils.LOG, "Couldn't release the cache properly", ex);
             }
         }
-    }
-
-    // @Override
-    // public void onExperimentalOffloadSchedulingEnabledChanged(boolean offloadSchedulingEnabled) {
-    //     Log.d(Utils.LOG, "onExperimentalOffloadSchedulingEnabledChanged: " + offloadSchedulingEnabled);
-
-    // }
-
-    @Override
-    public void enableAudioOffload(boolean enabled) {
-        if (
-            enabledAudioOffload == enabled ||
-            (enabled && !manager.shouldEnableAudioOffload())
-        ) return;
-        player.experimentalSetOffloadSchedulingEnabled(enabled);
-        Log.d(Utils.LOG, "enableAudioOffload: " + (enabled ? "true" : "false"));
-        enabledAudioOffload = enabled;
     }
 }

@@ -54,7 +54,6 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     private ArrayDeque<Runnable> initCallbacks = new ArrayDeque<>();
     private boolean connecting = false;
     private Bundle options;
-    private boolean hasBackgroundRuning = false;
     ReactApplicationContext reactAppContext;
 
     public MusicModule(ReactApplicationContext reactAppContext) {
@@ -72,8 +71,6 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     public void initialize() {
         ReactContext context = getReactApplicationContext();
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-        registerScreenBroadcastReceiver(reactAppContext);
-        registerLifecycleEvent(reactAppContext);
         eventHandler = new MusicEvents(context);
         manager.registerReceiver(eventHandler, new IntentFilter(Utils.EVENT_INTENT));
     }
@@ -110,66 +107,6 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     public void onServiceDisconnected(ComponentName name) {
         binder = null;
         connecting = false;
-    }
-
-
-    private void registerScreenBroadcastReceiver(ReactApplicationContext reactAppContext) {
-        final IntentFilter theFilter = new IntentFilter();
-        /** System Defined Broadcast */
-        theFilter.addAction(Intent.ACTION_SCREEN_ON);
-        theFilter.addAction(Intent.ACTION_SCREEN_OFF);
-
-        BroadcastReceiver screenOnOffReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String strAction = intent.getAction();
-
-                switch (strAction) {
-                    case Intent.ACTION_SCREEN_OFF:
-                        // Log.d(Utils.LOG, "ACTION_SCREEN_OFF");
-                        enableAudioOffload(true);
-                        break;
-                    case Intent.ACTION_SCREEN_ON:
-                        // Log.d(Utils.LOG, "ACTION_SCREEN_ON");
-                        if (hasBackgroundRuning) return;
-                        enableAudioOffload(false);
-                        break;
-                }
-            }
-        };
-
-        reactAppContext.registerReceiver(screenOnOffReceiver, theFilter);
-    }
-
-    private void registerLifecycleEvent(ReactApplicationContext reactAppContext) {
-        LifecycleEventListener lifecycleEventListener = new LifecycleEventListener() {
-            @Override
-            public void onHostResume() {
-                hasBackgroundRuning = false;
-                enableAudioOffload(false);
-                // Log.d(Utils.LOG, "onHostResume");
-            }
-
-            @Override
-            public void onHostPause() {
-                hasBackgroundRuning = true;
-                enableAudioOffload(true);
-                // Log.d(Utils.LOG, "onHostPause");
-            }
-
-             @Override
-             public void onHostDestroy() {
-                // Log.d(Utils.LOG, "onHostDestroy");
-             }
-        };
-
-        reactAppContext.addLifecycleEventListener(lifecycleEventListener);
-    }
-
-    private void enableAudioOffload(boolean enabled) {
-        // Log.d(Utils.LOG, "enableAudioOffload: " + (enabled ? "true" : "false"));
-        if (binder == null) return;
-        binder.enableAudioOffload(enabled);
     }
 
 

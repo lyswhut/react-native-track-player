@@ -213,7 +213,7 @@ public class MetadataManager {
 
         if(track.artwork == null) {
             prevArtwork = null;
-            builder.setLargeIcon(null);
+            builder.setLargeIcon((Bitmap) null);
         } else if (track.artwork.equals(prevArtwork) && prevArtResource != null) {
             metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, prevArtResource);
             builder.setLargeIcon(prevArtResource);
