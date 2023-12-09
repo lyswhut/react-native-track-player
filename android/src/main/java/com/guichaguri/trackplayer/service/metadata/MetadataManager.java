@@ -19,6 +19,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Action;
 import androidx.media.app.NotificationCompat.MediaStyle;
 import androidx.media.session.MediaButtonReceiver;
+import androidx.media3.common.util.UnstableApi;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -39,6 +40,7 @@ import java.util.List;
 /**
  * @author Guichaguri
  */
+@UnstableApi
 public class MetadataManager {
 
     private final MusicService service;

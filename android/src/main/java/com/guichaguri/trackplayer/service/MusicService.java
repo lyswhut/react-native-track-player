@@ -8,6 +8,7 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.media.session.MediaButtonReceiver;
+import androidx.media3.common.util.UnstableApi;
 
 import com.facebook.react.HeadlessJsTaskService;
 import com.facebook.react.ReactInstanceManager;
@@ -20,6 +21,7 @@ import javax.annotation.Nullable;
 /**
  * @author Guichaguri
  */
+@UnstableApi
 public class MusicService extends HeadlessJsTaskService {
 
     MusicManager manager;

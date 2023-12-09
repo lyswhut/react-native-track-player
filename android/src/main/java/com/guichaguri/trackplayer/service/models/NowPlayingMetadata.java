@@ -3,6 +3,9 @@ package com.guichaguri.trackplayer.service.models;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.media3.common.util.UnstableApi;
+
+@UnstableApi
 public class NowPlayingMetadata extends TrackMetadata {
 
     public double elapsedTime;

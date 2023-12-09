@@ -10,13 +10,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.media.RatingCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.RawResourceDataSource;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
-import com.google.android.exoplayer2.upstream.RawResourceDataSource;
 
 /**
  * @author Guichaguri
  */
+@UnstableApi
 public class Utils {
 
     public static final String EVENT_INTENT = "com.guichaguri.trackplayer.event";

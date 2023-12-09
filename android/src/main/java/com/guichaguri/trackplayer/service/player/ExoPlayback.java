@@ -1,9 +1,9 @@
 package com.guichaguri.trackplayer.service.player;
 
-import static com.google.android.exoplayer2.Player.PLAYBACK_SUPPRESSION_REASON_NONE;
-import static com.google.android.exoplayer2.Player.PLAYBACK_SUPPRESSION_REASON_TRANSIENT_AUDIO_FOCUS_LOSS;
-import static com.google.android.exoplayer2.Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY;
-import static com.google.android.exoplayer2.Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS;
+import static androidx.media3.common.Player.PLAYBACK_SUPPRESSION_REASON_NONE;
+import static androidx.media3.common.Player.PLAYBACK_SUPPRESSION_REASON_TRANSIENT_AUDIO_FOCUS_LOSS;
+import static androidx.media3.common.Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY;
+import static androidx.media3.common.Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS;
 
 import android.content.Context;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -13,19 +13,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Promise;
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.PlaybackParameters;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.Timeline.Window;
-import com.google.android.exoplayer2.TracksInfo;
-import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.metadata.MetadataOutput;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.upstream.HttpDataSource;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.PlaybackParameters;
+import androidx.media3.common.Player;
+import androidx.media3.common.Timeline.Window;
+import androidx.media3.common.Tracks;
+import androidx.media3.common.Metadata;
+import androidx.media3.common.TrackGroup;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.HttpDataSource;
+import androidx.media3.exoplayer.ExoPlaybackException;
+import androidx.media3.exoplayer.metadata.MetadataOutput;
+
 import com.google.common.collect.ImmutableList;
 import com.guichaguri.trackplayer.service.MusicManager;
 import com.guichaguri.trackplayer.service.Utils;
@@ -40,6 +42,7 @@ import java.util.Objects;
 /**
  * @author Guichaguri
  */
+@UnstableApi
 public abstract class ExoPlayback<T extends Player> implements Player.Listener, MetadataOutput {
 
     protected final Context context;
@@ -50,7 +53,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     // https://github.com/google/ExoPlayer/issues/2728
     protected int lastKnownWindow = C.INDEX_UNSET;
-    protected long lastKnownPosition = C.POSITION_UNSET;
+    protected long lastKnownPosition = C.INDEX_UNSET;
     protected int previousState = PlaybackStateCompat.STATE_NONE;
     protected float volumeMultiplier = 1.0F;
     protected boolean autoUpdateMetadata;
@@ -159,7 +162,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public void stop() {
         lastKnownWindow = C.INDEX_UNSET;
-        lastKnownPosition = C.POSITION_UNSET;
+        lastKnownPosition = C.INDEX_UNSET;
 
         player.stop();
         player.setPlayWhenReady(false);
@@ -168,7 +171,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public void reset() {
         lastKnownWindow = C.INDEX_UNSET;
-        lastKnownPosition = C.POSITION_UNSET;
+        lastKnownPosition = C.INDEX_UNSET;
 
         player.stop();
         player.clearMediaItems();
@@ -276,23 +279,23 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
     }
 
     @Override
-    public void onTracksInfoChanged(TracksInfo tracksInfo) {
-      ImmutableList<TracksInfo.TrackGroupInfo> trackGroupsInfo = tracksInfo.getTrackGroupInfos();
+    public void onTracksChanged(Tracks tracksInfo) {
+        ImmutableList<Tracks.Group> trackGroupsInfo = tracksInfo.getGroups();
 
-      for(int i = 0; i < trackGroupsInfo.size(); i++) {
-        // Loop through all track groups.
-        // As for the current implementation, there should be only one
-        TrackGroup group = trackGroupsInfo.get(i).getTrackGroup();
-        for(int f = 0; f < group.length; f++) {
-          // Loop through all formats inside the track group
-          Format format = group.getFormat(f);
+        for(int i = 0; i < trackGroupsInfo.size(); i++) {
+            // Loop through all track groups.
+            // As for the current implementation, there should be only one
+            TrackGroup group = trackGroupsInfo.get(i).getMediaTrackGroup();
+            for(int f = 0; f < group.length; f++) {
+                // Loop through all formats inside the track group
+                Format format = group.getFormat(f);
 
-          // Parse the metadata if it is present
-          if (format.metadata != null) {
-            onMetadata(format.metadata);
-          }
+                // Parse the metadata if it is present
+                if (format.metadata != null) {
+                onMetadata(format.metadata);
+                }
+            }
         }
-      }
     }
 
     // @Override
@@ -313,11 +316,11 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
         switch (reason) {
             case PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS:
-            manager.onAudioFocusChange(true, true, false);
-            break;
+                manager.onAudioFocusChange(true, true, false);
+                break;
             case PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY:
-            manager.onAudioFocusChange(false, true, false);
-            break;
+                manager.onAudioFocusChange(false, true, false);
+                break;
         }
     }
 

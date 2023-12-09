@@ -3,6 +3,8 @@ package com.guichaguri.trackplayer.service;
 import android.os.Binder;
 import android.os.Bundle;
 
+import androidx.media3.common.util.UnstableApi;
+
 import com.facebook.react.bridge.Promise;
 import com.guichaguri.trackplayer.service.metadata.MetadataManager;
 import com.guichaguri.trackplayer.service.models.NowPlayingMetadata;
@@ -11,6 +13,7 @@ import com.guichaguri.trackplayer.service.player.ExoPlayback;
 /**
  * @author Guichaguri
  */
+@UnstableApi
 public class MusicBinder extends Binder {
 
     private final MusicService service;

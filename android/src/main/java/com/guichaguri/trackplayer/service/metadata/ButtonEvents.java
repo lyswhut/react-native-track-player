@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.media.RatingCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+
+import androidx.media3.common.util.UnstableApi;
+
 import com.guichaguri.trackplayer.module.MusicEvents;
 import com.guichaguri.trackplayer.service.MusicManager;
 import com.guichaguri.trackplayer.service.MusicService;
@@ -15,6 +18,7 @@ import java.util.List;
 /**
  * @author Guichaguri
  */
+@UnstableApi
 public class ButtonEvents extends MediaSessionCompat.Callback {
 
     private final MusicService service;

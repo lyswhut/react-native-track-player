@@ -23,8 +23,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.Player;
+import androidx.media3.common.C;
+import androidx.media3.common.Player;
+import androidx.media3.common.util.UnstableApi;
+
 import com.guichaguri.trackplayer.service.MusicBinder;
 import com.guichaguri.trackplayer.service.MusicService;
 import com.guichaguri.trackplayer.service.Utils;
@@ -44,6 +46,7 @@ import javax.annotation.Nullable;
 /**
  * @author Guichaguri
  */
+@UnstableApi
 public class MusicModule extends ReactContextBaseJavaModule implements ServiceConnection {
 
     private MusicBinder binder;
@@ -526,7 +529,7 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
         waitForConnection(() -> {
             long position = binder.getPlayback().getBufferedPosition();
 
-            if(position == C.POSITION_UNSET) {
+            if(position == C.INDEX_UNSET) {
                 callback.resolve(Utils.toSeconds(0));
             } else {
                 callback.resolve(Utils.toSeconds(position));
@@ -539,7 +542,7 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
         waitForConnection(() -> {
             long position = binder.getPlayback().getPosition();
 
-            if(position == C.POSITION_UNSET) {
+            if(position == C.INDEX_UNSET) {
                 callback.reject("unknown", "Unknown position");
             } else {
                 callback.resolve(Utils.toSeconds(position));

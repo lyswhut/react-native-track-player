@@ -1,16 +1,19 @@
 package com.guichaguri.trackplayer.service.player;
 
-import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.metadata.flac.VorbisComment;
-import com.google.android.exoplayer2.metadata.icy.IcyHeaders;
-import com.google.android.exoplayer2.metadata.icy.IcyInfo;
-import com.google.android.exoplayer2.metadata.id3.TextInformationFrame;
-import com.google.android.exoplayer2.metadata.id3.UrlLinkFrame;
-import com.google.android.exoplayer2.metadata.mp4.MdtaMetadataEntry;
+import androidx.media3.common.Metadata;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.container.MdtaMetadataEntry;
+import androidx.media3.extractor.metadata.icy.IcyHeaders;
+import androidx.media3.extractor.metadata.icy.IcyInfo;
+import androidx.media3.extractor.metadata.id3.TextInformationFrame;
+import androidx.media3.extractor.metadata.id3.UrlLinkFrame;
+import androidx.media3.extractor.metadata.vorbis.VorbisComment;
+
 import com.guichaguri.trackplayer.service.MusicManager;
 
 import java.nio.charset.StandardCharsets;
 
+@UnstableApi
 public class SourceMetadata {
 
     /**

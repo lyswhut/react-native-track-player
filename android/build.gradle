@@ -61,30 +61,30 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    def exoPlayerVersion = safeExtGet("exoPlayerVersion", '2.17.1')
+    def media3Version = '1.1.1'
 
     // ExoPlayer Core
-    implementation "com.google.android.exoplayer:exoplayer-core:${exoPlayerVersion}"
+    implementation "androidx.media3:media3-exoplayer:${media3Version}"
 
     // ExoPlayer DASH
     if (dash) {
-        implementation "com.google.android.exoplayer:exoplayer-dash:${exoPlayerVersion}"
+        implementation "androidx.media3:media3-exoplayer-dash:${media3Version}"
     } else {
-        compileOnly "com.google.android.exoplayer:exoplayer-dash:${exoPlayerVersion}"
+        compileOnly "androidx.media3:media3-exoplayer-dash:${media3Version}"
     }
 
     // ExoPlayer HLS
     if (hls) {
-        implementation "com.google.android.exoplayer:exoplayer-hls:${exoPlayerVersion}"
+        implementation "androidx.media3:media3-exoplayer-hls:${media3Version}"
     } else {
-        compileOnly "com.google.android.exoplayer:exoplayer-hls:${exoPlayerVersion}"
+        compileOnly "androidx.media3:media3-exoplayer-hls:${media3Version}"
     }
 
     // ExoPlayer SmoothStreaming
     if (smoothstreaming) {
-        implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
+        implementation "androidx.media3:media3-exoplayer-smoothstreaming:${media3Version}"
     } else {
-        compileOnly "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
+        compileOnly "androidx.media3:media3-exoplayer-smoothstreaming:${media3Version}"
     }
 
     // Make sure we're using androidx

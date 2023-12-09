@@ -15,8 +15,11 @@ import android.os.Bundle;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.RatingCompat;
 
+import androidx.media3.common.util.UnstableApi;
+
 import com.guichaguri.trackplayer.service.Utils;
 
+@UnstableApi
 public abstract class TrackMetadata {
     public Uri artwork;
 
