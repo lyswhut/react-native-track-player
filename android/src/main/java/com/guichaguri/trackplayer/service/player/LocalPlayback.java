@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import androidx.media3.common.C;
-import androidx.media3.common.MediaItem;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
@@ -80,21 +79,21 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
     public void add(Track track, int index, Promise promise) {
         queue.add(index, track);
         MediaSource trackSource = track.toMediaSource(context, this);
-        player.addMediaItem(index, trackSource.getMediaItem());
+        player.addMediaSource(index, trackSource);
         promise.resolve(index);
         prepare();
     }
 
     @Override
     public void add(Collection<Track> tracks, int index, Promise promise) {
-        List<MediaItem> trackList = new ArrayList<>();
+        List<MediaSource> trackList = new ArrayList<>();
 
         for(Track track : tracks) {
-            trackList.add(track.toMediaSource(context, this).getMediaItem());
+            trackList.add(track.toMediaSource(context, this));
         }
 
         queue.addAll(index, tracks);
-        player.addMediaItems(index, trackList);
+        player.addMediaSources(index, trackList);
         promise.resolve(index);
 
         prepare();
