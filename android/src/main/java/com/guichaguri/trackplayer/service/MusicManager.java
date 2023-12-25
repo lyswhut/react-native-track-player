@@ -144,6 +144,7 @@ public class MusicManager {
                     shouldEnableAudioOffload
                         ? TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
                         : TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED)
+                .setIsGaplessSupportRequired(true)
                 .build())
             .build();
         player.setTrackSelectionParameters(trackSelectionParameters);
