@@ -1,5 +1,6 @@
 package com.guichaguri.trackplayer.service;
 
+import static androidx.media3.common.C.WAKE_MODE_NONE;
 import static androidx.media3.exoplayer.DefaultLoadControl.DEFAULT_BACK_BUFFER_DURATION_MS;
 import static androidx.media3.exoplayer.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS;
 import static androidx.media3.exoplayer.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS;
@@ -135,9 +136,10 @@ public class MusicManager {
 
         ExoPlayer player = new ExoPlayer.Builder(service, renderersFactory)
                 .setLoadControl(control)
+                .setWakeMode(WAKE_MODE_NONE)
                 .build();
 
-  
+
         TrackSelectionParameters trackSelectionParameters = player.getTrackSelectionParameters().buildUpon()
             .setAudioOffloadPreferences(new TrackSelectionParameters.AudioOffloadPreferences.Builder()
                 .setAudioOffloadMode(
