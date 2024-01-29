@@ -7,13 +7,18 @@ import static androidx.media3.exoplayer.DefaultLoadControl.DEFAULT_BUFFER_FOR_PL
 import static androidx.media3.exoplayer.DefaultLoadControl.DEFAULT_MAX_BUFFER_MS;
 import static androidx.media3.exoplayer.DefaultLoadControl.DEFAULT_MIN_BUFFER_MS;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 import androidx.media3.common.C;
@@ -38,8 +43,8 @@ public class MusicManager {
 
     private final MusicService service;
 
-    // private final WakeLock wakeLock;
-    // private WifiLock wifiLock = null;
+    private final WakeLock wakeLock;
+    private WifiLock wifiLock = null;
 
     private final MetadataManager metadata;
     private ExoPlayback playback;
@@ -61,20 +66,21 @@ public class MusicManager {
     // private boolean alwaysPauseOnInterruption = false;
     private String playState = null;
 
+    @SuppressLint("InvalidWakeLockTag")
     public MusicManager(MusicService service) {
         this.service = service;
         this.metadata = new MetadataManager(service, this);
 
-        // PowerManager powerManager = (PowerManager)service.getSystemService(Context.POWER_SERVICE);
-        // wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "track-player-wake-lock");
-        // wakeLock.setReferenceCounted(false);
+        PowerManager powerManager = (PowerManager)service.getSystemService(Context.POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "track-player-wake-lock");
+        wakeLock.setReferenceCounted(false);
 
         // Android 7: Use the application context here to prevent any memory leaks
-        // WifiManager wifiManager = (WifiManager)service.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        // if (wifiManager != null) {
-        //     wifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL, "track-player-wifi-lock");
-        //     wifiLock.setReferenceCounted(false);
-        // }
+        WifiManager wifiManager = (WifiManager)service.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
+            wifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL, "track-player-wifi-lock");
+            wifiLock.setReferenceCounted(false);
+        }
     }
 
     public ExoPlayback getPlayback() {
@@ -168,7 +174,7 @@ public class MusicManager {
         return new LocalPlayback(service, this, player, cacheMaxSize, autoUpdateMetadata);
     }
 
-    // @SuppressLint("WakelockTimeout")
+    @SuppressLint("WakelockTimeout")
     public void onPlay() {
         Log.d(Utils.LOG, "onPlay");
         if(playback == null) return;
@@ -184,11 +190,11 @@ public class MusicManager {
                 service.registerReceiver(noisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
             }
 
-            // if(!wakeLock.isHeld()) wakeLock.acquire();
+            if(!wakeLock.isHeld()) wakeLock.acquire();
 
-            // if(wifiLock != null && !Utils.isLocal(track.uri)) {
-            //     if(!wifiLock.isHeld()) wifiLock.acquire();
-            // }
+            if(wifiLock != null && !Utils.isLocal(track.uri)) {
+                if(!wifiLock.isHeld()) wifiLock.acquire();
+            }
         }
 
         if (playback.shouldAutoUpdateMetadata())
@@ -205,8 +211,8 @@ public class MusicManager {
         }
 
         // Release the wake and the wifi locks
-        // if(wakeLock.isHeld()) wakeLock.release();
-        // if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
+        if(wakeLock.isHeld()) wakeLock.release();
+        if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
 
         if (playback.shouldAutoUpdateMetadata())
             metadata.setActive(true);
@@ -222,8 +228,8 @@ public class MusicManager {
         }
 
         // Release the wake and the wifi locks
-        // if(wakeLock.isHeld()) wakeLock.release();
-        // if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
+        if(wakeLock.isHeld()) wakeLock.release();
+        if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
 
         // abandonFocus();
 
@@ -420,8 +426,8 @@ public class MusicManager {
         metadata.destroy();
 
         // Release the locks
-        // if(wakeLock.isHeld()) wakeLock.release();
-        // if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
+        if(wakeLock.isHeld()) wakeLock.release();
+        if(wifiLock != null && wifiLock.isHeld()) wifiLock.release();
     }
 
 }
