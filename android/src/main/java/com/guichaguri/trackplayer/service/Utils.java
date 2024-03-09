@@ -12,7 +12,6 @@ import android.support.v4.media.RatingCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import androidx.media3.common.util.UnstableApi;
-import androidx.media3.datasource.RawResourceDataSource;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
@@ -50,7 +49,6 @@ public class Utils {
                 scheme.equals(ContentResolver.SCHEME_FILE) ||
                 scheme.equals(ContentResolver.SCHEME_ANDROID_RESOURCE) ||
                 scheme.equals(ContentResolver.SCHEME_CONTENT) ||
-                scheme.equals(RawResourceDataSource.RAW_RESOURCE_SCHEME) ||
                 scheme.equals("res") ||
                 host == null ||
                 host.equals("localhost") ||

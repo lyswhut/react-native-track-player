@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Action;
 import androidx.media.app.NotificationCompat.MediaStyle;
@@ -23,7 +25,7 @@ import androidx.media3.common.util.UnstableApi;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
 import com.guichaguri.trackplayer.R;
@@ -52,7 +54,7 @@ public class MetadataManager {
     private int backwardJumpInterval = 15;
     private long actions = 0;
     private long compactActions = 0;
-    private SimpleTarget<Bitmap> artworkTarget;
+    private CustomTarget<Bitmap> artworkTarget;
     private NotificationCompat.Builder builder;
     private MediaMetadataCompat.Builder prevMetadata = null;
     private Uri prevArtwork = null;
@@ -223,7 +225,7 @@ public class MetadataManager {
 
             artworkTarget = rm.asBitmap()
                 .load(track.artwork)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
                         prevArtResource = resource;
@@ -235,6 +237,9 @@ public class MetadataManager {
                         updateNotification();
                         artworkTarget = null;
                     }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) { }
                 });
         }
 

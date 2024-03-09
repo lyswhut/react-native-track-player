@@ -2,6 +2,7 @@ package com.guichaguri.trackplayer.service.models;
 
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_URI;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -76,7 +77,7 @@ public class Track extends TrackMetadata {
         if(resourceId == 0) {
             uri = Utils.getUri(context, bundle, "url");
         } else {
-            uri = RawResourceDataSource.buildRawResourceUri(resourceId);
+            uri = new Uri.Builder().scheme(ContentResolver.SCHEME_ANDROID_RESOURCE).path(Integer.toString(resourceId)).build();
         }
 
         String trackType = bundle.getString("type", "default");
