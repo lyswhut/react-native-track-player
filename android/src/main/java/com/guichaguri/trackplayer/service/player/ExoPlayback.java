@@ -205,7 +205,7 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
     }
 
     public void seekTo(long time) {
-        if (queue.size() < 1) return;
+        if (queue.isEmpty()) return;
         lastKnownWindow = player.getCurrentMediaItemIndex();
         lastKnownPosition = player.getCurrentPosition();
 
