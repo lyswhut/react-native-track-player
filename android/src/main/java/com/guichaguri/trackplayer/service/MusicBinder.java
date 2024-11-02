@@ -2,6 +2,7 @@ package com.guichaguri.trackplayer.service;
 
 import android.os.Binder;
 import android.os.Bundle;
+import android.support.v4.media.session.MediaSessionCompat;
 
 import androidx.media3.common.util.UnstableApi;
 
@@ -61,6 +62,14 @@ public class MusicBinder extends Binder {
 
     public void clearNowPlayingMetadata() {
         manager.getMetadata().setActive(false);
+    }
+
+    public void updateNowPlayingTitles(long duration, String title, String artist, String album) {
+      MetadataManager metadata = manager.getMetadata();
+      metadata.updateNowPlayingTitles(getPlayback(), duration, title, artist, album);
+      MediaSessionCompat session = metadata.getSession();
+      if (session.isActive()) return;
+      session.setActive(true);
     }
 
     public int getRatingType() {

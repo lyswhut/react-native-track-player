@@ -151,6 +151,10 @@ function updateNowPlayingMetadata(metadata: NowPlayingMetadata, playing: boolean
   return TrackPlayer.updateNowPlayingMetadata(metadata, playing)
 }
 
+async function updateNowPlayingTitles(duration: number, title: string, artist: string, album: string): Promise<void> {
+  return TrackPlayer.updateNowPlayingTitles(duration, title, artist, album)
+}
+
 // MARK: - Player API
 
 async function reset(): Promise<void> {
@@ -219,17 +223,17 @@ async function getCurrentTrack(): Promise<number> {
 
 async function getDuration(): Promise<number> {
   if (!isSetupedPlayer) return Promise.resolve(0)
-  return TrackPlayer.getDuration()
+  return (await TrackPlayer.getDuration()) / 1000
 }
 
 async function getBufferedPosition(): Promise<number> {
   if (!isSetupedPlayer) return Promise.resolve(0)
-  return TrackPlayer.getBufferedPosition()
+  return (await TrackPlayer.getBufferedPosition()) / 1000
 }
 
 async function getPosition(): Promise<number> {
   if (!isSetupedPlayer) return Promise.resolve(0)
-  return TrackPlayer.getPosition()
+  return (await TrackPlayer.getPosition()) / 1000
 }
 
 async function getState(): Promise<State> {
@@ -262,6 +266,7 @@ export default {
   updateMetadataForTrack,
   clearNowPlayingMetadata,
   updateNowPlayingMetadata,
+  updateNowPlayingTitles,
 
   // MARK: - Player API
   reset,

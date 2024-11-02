@@ -1,5 +1,10 @@
 package com.guichaguri.trackplayer.service.metadata;
 
+import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM;
+import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST;
+import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
+import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE;
+
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -252,6 +257,16 @@ public class MetadataManager {
         updatePlayback(isPlaying);
         updatePlaybackState(playback);
         updateNotification();
+    }
+
+    public void updateNowPlayingTitles(ExoPlayback playback, long duration, String title, String artist, String album) {
+      MediaMetadataCompat.Builder metadata = new MediaMetadataCompat.Builder();
+      metadata.putString(METADATA_KEY_TITLE, title);
+      metadata.putString(METADATA_KEY_ARTIST, artist);
+      metadata.putString(METADATA_KEY_ALBUM, album);
+      metadata.putLong(METADATA_KEY_DURATION, duration);
+      session.setMetadata(metadata.build());
+      updatePlaybackState(playback);
     }
 
     /**

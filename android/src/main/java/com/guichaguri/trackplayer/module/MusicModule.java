@@ -1,8 +1,6 @@
 package com.guichaguri.trackplayer.module;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -15,7 +13,6 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -314,6 +311,14 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     }
 
     @ReactMethod
+    public void updateNowPlayingTitles(float duration, String title, String artist, String album, final Promise callback) {
+      waitForConnection(() -> {
+        binder.updateNowPlayingTitles((long) duration, title, artist, album);
+        callback.resolve(null);
+      });
+    }
+
+    @ReactMethod
     public void removeUpcomingTracks(final Promise callback) {
         waitForConnection(() -> {
             binder.getPlayback().removeUpcomingTracks();
@@ -454,9 +459,9 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
             long duration = binder.getPlayback().getDuration();
 
             if(duration == C.TIME_UNSET) {
-                callback.resolve(Utils.toSeconds(0));
+                callback.resolve(0);
             } else {
-                callback.resolve(Utils.toSeconds(duration));
+                callback.resolve((int) duration);
             }
         });
     }
@@ -467,9 +472,9 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
             long position = binder.getPlayback().getBufferedPosition();
 
             if(position == C.INDEX_UNSET) {
-                callback.resolve(Utils.toSeconds(0));
+                callback.resolve(0);
             } else {
-                callback.resolve(Utils.toSeconds(position));
+                callback.resolve((int) position);
             }
         });
     }
@@ -482,7 +487,7 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
             if(position == C.INDEX_UNSET) {
                 callback.reject("unknown", "Unknown position");
             } else {
-                callback.resolve(Utils.toSeconds(position));
+                callback.resolve((int) position);
             }
         });
     }

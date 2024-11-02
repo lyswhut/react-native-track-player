@@ -35,8 +35,8 @@ public class Utils {
         return (long)(seconds * 1000);
     }
 
-    public static double toSeconds(long millis) {
-        return millis / 1000D;
+    public static float toSeconds(long millis) {
+        return millis / 1000F;
     }
 
     public static boolean isLocal(Uri uri) {
