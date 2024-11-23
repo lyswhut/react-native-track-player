@@ -246,6 +246,21 @@ async function getRepeatMode(): Promise<RepeatMode> {
   return TrackPlayer.getRepeatMode()
 }
 
+async function isCached(url: string): Promise<boolean> {
+  if (!isSetupedPlayer) return false
+  return TrackPlayer.isCached(url)
+}
+
+async function getCacheSize(): Promise<number> {
+  if (!isSetupedPlayer) return 0
+  return TrackPlayer.getCacheSize()
+}
+
+async function clearCache(): Promise<void> {
+  if (!isSetupedPlayer) return
+  return TrackPlayer.clearCache()
+}
+
 export default {
   // MARK: - General API
   setupPlayer,
@@ -289,4 +304,7 @@ export default {
   getPosition,
   getState,
   getRepeatMode,
+  isCached,
+  getCacheSize,
+  clearCache
 }

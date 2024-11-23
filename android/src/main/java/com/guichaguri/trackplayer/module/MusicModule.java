@@ -327,6 +327,27 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     }
 
     @ReactMethod
+    public void isCached(String url, final Promise callback) {
+        waitForConnection(() -> {
+            binder.getPlayback().isCached(url, callback);
+        });
+    }
+
+    @ReactMethod
+    public void getCacheSize(final Promise callback) {
+        waitForConnection(() -> {
+            binder.getPlayback().getCacheSize(callback);
+        });
+    }
+
+    @ReactMethod
+    public void clearCache(final Promise callback) {
+        waitForConnection(() -> {
+            binder.getPlayback().clearCache(callback);
+        });
+    }
+
+    @ReactMethod
     public void skip(final int index, final Promise callback) {
         waitForConnection(() -> binder.getPlayback().skip(index, callback));
     }

@@ -12,6 +12,7 @@ import androidx.media3.database.DatabaseProvider;
 import androidx.media3.database.StandaloneDatabaseProvider;
 import androidx.media3.datasource.DataSource;
 import androidx.media3.datasource.cache.CacheDataSource;
+import androidx.media3.datasource.cache.CacheSpan;
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor;
 import androidx.media3.datasource.cache.SimpleCache;
 import androidx.media3.exoplayer.ExoPlayer;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.NavigableSet;
 
 /**
  * @author Guichaguri
@@ -46,7 +48,7 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
     @Override
     public void initialize() {
         if(cacheMaxSize > 0) {
-            File cacheDir = new File(context.getCacheDir(), "TrackPlayer");
+            File cacheDir = new File(context.getFilesDir(), "TrackPlayer");
             DatabaseProvider db = new StandaloneDatabaseProvider(context);
             cache = new SimpleCache(cacheDir, new LeastRecentlyUsedCacheEvictor(cacheMaxSize), db);
         } else {
@@ -65,6 +67,34 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
                                 .setCache(cache)
                                 .setUpstreamDataSourceFactory(ds)
                                 .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
+    }
+
+    public void isCached(String url, Promise promise) {
+        NavigableSet<CacheSpan> cachedSpans = cache.getCachedSpans(url);
+        promise.resolve(!cachedSpans.isEmpty());
+    }
+
+    public void getCacheSize(Promise promise) {
+        if (cache != null) {
+            promise.resolve((double) cache.getCacheSpace());
+        } else {
+          promise.resolve(0);
+        }
+    }
+
+    public void clearCache(Promise promise) {
+        if (cache != null) {
+            for (String key: cache.getKeys()) {
+                try {
+                    cache.removeResource(key);
+                } catch (Exception e) {
+                    Log.e(Utils.LOG, e.getMessage());
+                }
+            }
+        } else {
+            Log.d(Utils.LOG, "Cache is not initialized.");
+        }
+        promise.resolve(null);
     }
 
     private void prepare() {

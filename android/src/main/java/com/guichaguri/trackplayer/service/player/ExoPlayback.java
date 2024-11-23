@@ -88,6 +88,12 @@ public abstract class ExoPlayback<T extends Player> implements Player.Listener, 
 
     public abstract int getRepeatMode();
 
+    public abstract void isCached(String url, Promise promise);
+
+    public abstract void getCacheSize(Promise promise);
+
+    public abstract void clearCache(Promise promise);
+
     public void updateTrack(int index, Track track) {
         int currentIndex = player.getCurrentMediaItemIndex();
 
