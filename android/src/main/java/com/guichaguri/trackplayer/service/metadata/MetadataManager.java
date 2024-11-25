@@ -2,6 +2,7 @@ package com.guichaguri.trackplayer.service.metadata;
 
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST;
+import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART_URI;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE;
 
@@ -264,6 +265,12 @@ public class MetadataManager {
       metadata.putString(METADATA_KEY_TITLE, title);
       metadata.putString(METADATA_KEY_ARTIST, artist);
       metadata.putString(METADATA_KEY_ALBUM, album);
+      if (prevArtwork != null) {
+        metadata.putString(METADATA_KEY_ART_URI, prevArtwork.toString());
+      }
+      if (prevArtResource != null) {
+        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, prevArtResource);
+      }
       metadata.putLong(METADATA_KEY_DURATION, duration);
       session.setMetadata(metadata.build());
       updatePlaybackState(playback);
