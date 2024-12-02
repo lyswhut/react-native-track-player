@@ -61,10 +61,10 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    def media3Version = '1.5.0-rc02'
+    def media3Version = '1.5.0'
 
     // ExoPlayer Core
-    implementation "androidx.media3:media3-exoplayer:1.5.0-rc02"
+    implementation "androidx.media3:media3-exoplayer:1.5.0"
 
     // ExoPlayer DASH
     if (dash) {
