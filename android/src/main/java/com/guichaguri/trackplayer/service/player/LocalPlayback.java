@@ -70,6 +70,10 @@ public class LocalPlayback extends ExoPlayback<ExoPlayer> {
     }
 
     public void isCached(String url, Promise promise) {
+        if (cache == null) {
+          promise.resolve(false);
+          return;
+        }
         NavigableSet<CacheSpan> cachedSpans = cache.getCachedSpans(url);
         promise.resolve(!cachedSpans.isEmpty());
     }
