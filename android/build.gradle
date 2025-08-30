@@ -61,10 +61,10 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    def media3Version = '1.5.1'
+    def media3Version = '1.8.0'
 
     // ExoPlayer Core
-    implementation "androidx.media3:media3-exoplayer:1.5.1"
+    implementation "androidx.media3:media3-exoplayer:1.8.0"
 
     // ExoPlayer DASH
     if (dash) {
@@ -88,8 +88,8 @@ dependencies {
     }
 
     // Make sure we're using androidx
-    implementation "androidx.core:core:1.15.0"
-    implementation "androidx.media:media:1.7.0"
+    implementation "androidx.core:core:1.17.0"
+    implementation "androidx.media:media:1.7.1"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0"
-    implementation "com.github.bumptech.glide:glide:4.14.2"
+    implementation "com.github.bumptech.glide:glide:5.0.0"
 }
