@@ -231,13 +231,16 @@ public class MetadataManager {
 
             artworkTarget = rm.asBitmap()
                 .load(track.artwork)
+                .override(512, 512)
+                .centerCrop()
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
-                        prevArtResource = resource;
+                        Bitmap safeCopy = resource.copy(resource.getConfig() != null ? resource.getConfig() : Bitmap.Config.ARGB_8888, false);
+                        prevArtResource = safeCopy;
 
-                        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, resource);
-                        builder.setLargeIcon(resource);
+                        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, safeCopy);
+                        builder.setLargeIcon(safeCopy);
 
                         session.setMetadata(metadata.build());
                         updateNotification();
