@@ -190,22 +190,32 @@ public class MetadataManager {
         NotificationManager manager = (NotificationManager) context.getSystemService(ns);
         manager.cancelAll();
     }
+    private static Bitmap safeCopyBitmap(@Nullable Bitmap src) {
+        if (src == null) return null;
+        try {
+            if (src.isRecycled()) return null;
+        } catch (Exception ignored) {
+            return null;
+        }
 
-    /**
-     * Updates the artwork
-     * @param bitmap The new artwork
-     */
-    protected void updateArtwork(Bitmap bitmap) {
-        Track track = manager.getPlayback().getCurrentTrack();
-        if(track == null) return;
-
-        MediaMetadataCompat.Builder metadata = track.toMediaMetadata();
-
-        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
-        builder.setLargeIcon(bitmap);
-
-        session.setMetadata(metadata.build());
-        updateNotification();
+        Bitmap.Config cfg = src.getConfig() != null ? src.getConfig() : Bitmap.Config.ARGB_8888;
+        try {
+            return src.copy(cfg, false);
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+    private boolean setArt(MediaMetadataCompat.Builder metadata, NotificationCompat.Builder builder) {
+        if (prevArtResource == null) return false;
+        try {
+            if (prevArtResource.isRecycled()) {
+              prevArtResource = null;
+              return false;
+            }
+        } catch (Exception e) { return false; }
+        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, prevArtResource);
+        builder.setLargeIcon(prevArtResource);
+        return true;
     }
 
     /**
@@ -222,13 +232,9 @@ public class MetadataManager {
         if(track.artwork == null) {
             prevArtwork = null;
             builder.setLargeIcon((Bitmap) null);
-        } else if (track.artwork.equals(prevArtwork) && prevArtResource != null) {
-            metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, prevArtResource);
-            builder.setLargeIcon(prevArtResource);
-        } else {
+        } else if (!track.artwork.equals(prevArtwork) || (prevArtResource != null && !this.setArt(metadata, builder))) {
             prevArtwork = track.artwork;
             prevArtResource = null;
-
             artworkTarget = rm.asBitmap()
                 .load(track.artwork)
                 .override(512, 512)
@@ -236,14 +242,11 @@ public class MetadataManager {
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
-                        Bitmap safeCopy = resource.copy(resource.getConfig() != null ? resource.getConfig() : Bitmap.Config.ARGB_8888, false);
-                        prevArtResource = safeCopy;
-
-                        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, safeCopy);
-                        builder.setLargeIcon(safeCopy);
-
-                        session.setMetadata(metadata.build());
-                        updateNotification();
+                        prevArtResource = safeCopyBitmap(resource);
+                        if (setArt(metadata, builder)) {
+                          session.setMetadata(metadata.build());
+                          updateNotification();
+                        }
                         artworkTarget = null;
                     }
 
@@ -271,9 +274,7 @@ public class MetadataManager {
       if (prevArtwork != null) {
         metadata.putString(METADATA_KEY_ART_URI, prevArtwork.toString());
       }
-      if (prevArtResource != null) {
-        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, prevArtResource);
-      }
+      this.setArt(metadata, builder);
       metadata.putLong(METADATA_KEY_DURATION, duration);
       session.setMetadata(metadata.build());
       updatePlaybackState(playback);
