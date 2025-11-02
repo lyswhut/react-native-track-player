@@ -89,7 +89,7 @@ dependencies {
 
     // Make sure we're using androidx
     implementation "androidx.core:core:1.16.0"
-    implementation "androidx.media:media:1.7.1"
+    implementation "androidx.media:media:1.7.0"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.1.0"
     implementation "com.github.bumptech.glide:glide:5.0.5"
 }
