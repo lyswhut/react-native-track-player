@@ -10,6 +10,7 @@ import {
   TrackMetadataBase,
   NowPlayingMetadata,
   RepeatMode,
+  NowPlayingTitles,
 } from './interfaces'
 
 const { TrackPlayerModule: TrackPlayer } = NativeModules
@@ -151,8 +152,8 @@ function updateNowPlayingMetadata(metadata: NowPlayingMetadata, playing: boolean
   return TrackPlayer.updateNowPlayingMetadata(metadata, playing)
 }
 
-async function updateNowPlayingTitles(duration: number, title: string, artist: string, album: string): Promise<void> {
-  return TrackPlayer.updateNowPlayingTitles(duration, title, artist, album)
+async function updateNowPlayingTitles(titles: NowPlayingTitles): Promise<void> {
+  return TrackPlayer.updateNowPlayingTitles(titles)
 }
 
 // MARK: - Player API

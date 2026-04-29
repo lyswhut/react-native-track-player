@@ -64,9 +64,9 @@ public class MusicBinder extends Binder {
         manager.getMetadata().setActive(false);
     }
 
-    public void updateNowPlayingTitles(long duration, String title, String artist, String album) {
+    public void updateNowPlayingTitles(Bundle data) {
       MetadataManager metadata = manager.getMetadata();
-      metadata.updateNowPlayingTitles(getPlayback(), duration, title, artist, album);
+      metadata.updateTitles(data);
       MediaSessionCompat session = metadata.getSession();
       if (session.isActive()) return;
       session.setActive(true);

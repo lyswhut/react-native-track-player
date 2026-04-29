@@ -220,10 +220,18 @@ export interface TrackMetadataBase {
   date?: string
   rating?: number | boolean
   isLiveStream?: boolean
+  lyric?: string
 }
 
 export interface NowPlayingMetadata extends TrackMetadataBase {
   elapsedTime?: number
+}
+
+export interface NowPlayingTitles {
+  title?: string
+  artist?: string
+  album?: string
+  lyric?: string
 }
 
 export interface Track extends TrackMetadataBase {

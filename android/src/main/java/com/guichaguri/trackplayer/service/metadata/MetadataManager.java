@@ -2,7 +2,7 @@ package com.guichaguri.trackplayer.service.metadata;
 
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST;
-import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI;
+import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART_URI;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION;
 import static android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE;
 
@@ -208,6 +208,24 @@ public class MetadataManager {
         updateNotification();
     }
 
+    public void updateTitles(Bundle data) {
+      if (prevMetadata == null) return;
+      if (data.containsKey("title")) {
+        prevMetadata.putString(METADATA_KEY_TITLE, data.getString("title"));
+      }
+      if (data.containsKey("artist")) {
+        prevMetadata.putString(METADATA_KEY_TITLE, data.getString("artist"));
+      }
+      if (data.containsKey("album")) {
+        prevMetadata.putString(METADATA_KEY_TITLE, data.getString("album"));
+      }
+      if (data.containsKey("lyric")) {
+        prevMetadata.putString("android.media.metadata.LYRICS", data.getString("lyric"));
+      }
+      session.setMetadata(prevMetadata.build());
+      updatePlaybackState(manager.getPlayback());
+    }
+
     /**
      * Updates the current track
      * @param track The new track
@@ -221,6 +239,7 @@ public class MetadataManager {
 
         if(track.artwork == null) {
             prevArtwork = null;
+            prevArtResource = null;
             builder.setLargeIcon((Bitmap) null);
         } else if (track.artwork.equals(prevArtwork) && prevArtResource != null) {
             metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, prevArtResource);
@@ -260,22 +279,6 @@ public class MetadataManager {
         updatePlayback(isPlaying);
         updatePlaybackState(playback);
         updateNotification();
-    }
-
-    public void updateNowPlayingTitles(ExoPlayback playback, long duration, String title, String artist, String album) {
-      MediaMetadataCompat.Builder metadata = new MediaMetadataCompat.Builder();
-      metadata.putString(METADATA_KEY_TITLE, title);
-      metadata.putString(METADATA_KEY_ARTIST, artist);
-      metadata.putString(METADATA_KEY_ALBUM, album);
-      if (prevArtwork != null) {
-        metadata.putString(METADATA_KEY_ALBUM_ART_URI, prevArtwork.toString());
-      }
-      if (prevArtResource != null) {
-        metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, prevArtResource);
-      }
-      metadata.putLong(METADATA_KEY_DURATION, duration);
-      session.setMetadata(metadata.build());
-      updatePlaybackState(playback);
     }
 
     /**

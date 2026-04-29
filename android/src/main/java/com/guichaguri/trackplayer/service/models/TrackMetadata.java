@@ -29,20 +29,46 @@ public abstract class TrackMetadata {
     public String date;
     public String genre;
     public long duration;
+    public String lyric;
 
     public RatingCompat rating;
 
     public void setMetadata(Context context, Bundle bundle, int ratingType) {
+      if (bundle.containsKey("artwork")) {
         artwork = Utils.getUri(context, bundle, "artwork");
+      }
 
+      if (bundle.containsKey("title")) {
         title = bundle.getString("title");
-        artist = bundle.getString("artist");
-        album = bundle.getString("album");
-        date = bundle.getString("date");
-        genre = bundle.getString("genre");
-        duration = Utils.toMillis(bundle.getDouble("duration", 0));
+      }
 
+      if (bundle.containsKey("artist")) {
+        artist = bundle.getString("artist");
+      }
+
+      if (bundle.containsKey("album")) {
+        album = bundle.getString("album");
+      }
+
+      if (bundle.containsKey("date")) {
+        date = bundle.getString("date");
+      }
+
+      if (bundle.containsKey("genre")) {
+        genre = bundle.getString("genre");
+      }
+
+      if (bundle.containsKey("duration")) {
+        duration = Utils.toMillis(bundle.getDouble("duration", 0));
+      }
+
+      if (bundle.containsKey("lyric")) {
+        lyric = bundle.getString("lyric");
+      }
+
+      if (bundle.containsKey("rating")) {
         rating = Utils.getRating(bundle, "rating", ratingType);
+      }
     }
 
     public MediaMetadataCompat.Builder toMediaMetadata() {
@@ -53,6 +79,7 @@ public abstract class TrackMetadata {
         builder.putString(METADATA_KEY_ALBUM, album);
         builder.putString(METADATA_KEY_DATE, date);
         builder.putString(METADATA_KEY_GENRE, genre);
+        builder.putString("android.media.metadata.LYRICS", lyric);
 
         if (duration > 0) {
             builder.putLong(METADATA_KEY_DURATION, duration);
