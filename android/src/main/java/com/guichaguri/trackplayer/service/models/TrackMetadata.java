@@ -79,7 +79,10 @@ public abstract class TrackMetadata {
         builder.putString(METADATA_KEY_ALBUM, album);
         builder.putString(METADATA_KEY_DATE, date);
         builder.putString(METADATA_KEY_GENRE, genre);
-        builder.putString("android.media.metadata.LYRICS", lyric);
+
+        if (lyric != null) {
+            builder.putString("android.media.metadata.LYRICS", lyric);
+        }
 
         if (duration > 0) {
             builder.putLong(METADATA_KEY_DURATION, duration);
