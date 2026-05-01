@@ -214,10 +214,10 @@ public class MetadataManager {
         prevMetadata.putString(METADATA_KEY_TITLE, data.getString("title"));
       }
       if (data.containsKey("artist")) {
-        prevMetadata.putString(METADATA_KEY_TITLE, data.getString("artist"));
+        prevMetadata.putString(METADATA_KEY_ARTIST, data.getString("artist"));
       }
       if (data.containsKey("album")) {
-        prevMetadata.putString(METADATA_KEY_TITLE, data.getString("album"));
+        prevMetadata.putString(METADATA_KEY_ALBUM, data.getString("album"));
       }
       if (data.containsKey("lyric")) {
         prevMetadata.putString("android.media.metadata.LYRICS", data.getString("lyric"));
