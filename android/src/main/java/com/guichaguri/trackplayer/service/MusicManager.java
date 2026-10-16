@@ -143,28 +143,27 @@ public class MusicManager {
                 .setWakeMode(WAKE_MODE_NONE)
                 .build();
 
-
-        TrackSelectionParameters trackSelectionParameters = player.getTrackSelectionParameters().buildUpon()
+        if (shouldEnableAudioOffload) {
+          TrackSelectionParameters trackSelectionParameters = player.getTrackSelectionParameters().buildUpon()
             .setAudioOffloadPreferences(new TrackSelectionParameters.AudioOffloadPreferences.Builder()
-                .setAudioOffloadMode(
-                    shouldEnableAudioOffload
-                        ? TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
-                        : TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED)
-                .setIsGaplessSupportRequired(true)
-                .build())
+              .setAudioOffloadMode(TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
+              .setIsGaplessSupportRequired(true)
+              .setIsSpeedChangeSupportRequired(true)
+              .build())
             .build();
-        player.setTrackSelectionParameters(trackSelectionParameters);
-        // player.addAudioOffloadListener(new ExoPlayer.AudioOffloadListener() {
-        //     @Override
-        //     public void onSleepingForOffloadChanged(boolean isSleepingForOffload) {
-        //         Log.d(Utils.LOG, "onSleepingForOffloadChanged: " + isSleepingForOffload);
-        //     }
+          player.setTrackSelectionParameters(trackSelectionParameters);
+          // player.addAudioOffloadListener(new ExoPlayer.AudioOffloadListener() {
+          //     @Override
+          //     public void onSleepingForOffloadChanged(boolean isSleepingForOffload) {
+          //         Log.d(Utils.LOG, "onSleepingForOffloadChanged: " + isSleepingForOffload);
+          //     }
 
-        //     @Override
-        //     public void onOffloadedPlayback(boolean isOffloadedPlayback) {
-        //         Log.d(Utils.LOG, "onOffloadedPlayback: " + isOffloadedPlayback);
-        //     }
-        // });
+          //     @Override
+          //     public void onOffloadedPlayback(boolean isOffloadedPlayback) {
+          //         Log.d(Utils.LOG, "onOffloadedPlayback: " + isOffloadedPlayback);
+          //     }
+          // });
+        }
 
         // player.addAnalyticsListener(new EventLogger(null));
 
